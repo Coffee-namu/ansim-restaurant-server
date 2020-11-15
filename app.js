@@ -12,7 +12,7 @@ var cors = require('cors')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 // var apiAuthRouter = require('./routes/apiAuth');
-// var apiV1Router = require('./routes/apiV1');
+var apiV1Router = require('./routes/apiV1');
 
 var app = express();
 
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 // app.use('/api/auth', apiAuthRouter);
-// app.use('/api/v1', apiV1Router);
+app.use('/api/v1', apiV1Router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
