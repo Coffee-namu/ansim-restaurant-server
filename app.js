@@ -5,13 +5,13 @@ var cookieParser = require('cookie-parser');
 var methodOverride = require('method-override');
 var logger = require('morgan');
 var session = require('express-session');
-// var passport = require('passport');
-// var passportConfig = require('./passport');
+var passport = require('passport');
+var passportConfig = require('./passport');
 var cors = require('cors')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-// var apiAuthRouter = require('./routes/apiAuth');
+var apiAuthRouter = require('./routes/apiAuth');
 var apiV1Router = require('./routes/apiV1');
 
 var app = express();
@@ -29,12 +29,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser('cookieParser_secret_key'));
 app.use(session({ secret: 'session_secret_key', resave: false, saveUninitialized: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-// app.use('/api/auth', apiAuthRouter);
+app.use('/api/auth', apiAuthRouter);
 app.use('/api/v1', apiV1Router);
 
 // catch 404 and forward to error handler
