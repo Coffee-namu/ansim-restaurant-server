@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "ansim",
+    "password": "ansim",
+    "database": "ansim",
+    "host": "127.0.0.1",
+    "dialect": "mariadb"
+  },
+  "test": {
+    "username": "ansim",
+    "password": "ansim",
+    "database": "ansim",
+    "host": "127.0.0.1",
+    "dialect": "mariadb"
+  },
+  "production": {
+    "username": "ansim",
+    "password": "ansim",
+    "database": "ansim",
+    "host": "127.0.0.1",
+    "dialect": "mariadb"
+  }
+}
