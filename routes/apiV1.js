@@ -109,18 +109,151 @@ router.get('/ansim',function(req, res, next){
   )
   .catch(()=> res.status(401).end());
 });
-function pythagorasFormula(userx, usery, restx, resty){
+function pythagorasFormula(user_x, user_y, rest_x, rest_y){
   //Special Law of Cosines.
   //IEEE 754, 64bit calculation.
   //error is about 5M~.
   const R = 6371e3;
-  const pi1 = userx*Math.PI/180;
-  const pi2 = restx*Math.PI/180;
-  const rad = (usery-resty)*Math.PI/180;
-  const dist = Math.acos(Math.sin(pi1)*Math.sin(pi2)+Math.cos(pi1)*Math.cos(pi2)*Math.cos(rad))*R;
+  const user_pi = user_x*Math.PI/180;
+  const rest_pi = rest_x*Math.PI/180;
+  const rad = (user_y-rest_y)*Math.PI/180;
+  const dist = Math.acos(Math.sin(user_pi)*Math.sin(rest_pi)+Math.cos(user_pi)*Math.cos(rest_pi)*Math.cos(rad))*R;
   return dist;
 }
 
 
 //
+//Board Functions
+//
+
+//Board No =  1(자유게시판) 2(리뷰게시판) ?
+//1 page have 20 documents
+
+//Board Page
+router.get('/board/:page_number', function(req, res, next){
+  model.document.findAll(
+    { 
+      order:['document_id', 'DESC'],
+      offset: (req.params.page_number-1)*20, limit : 20
+    }
+  
+  ).then((result)=>res.json(result))
+  .catch(()=>res.status(400).end());
+});
+
+//Document Page
+//Send Document's properties and Comments
+router.get('/board/document/:document_number', function(req, res, next){
+  model.document.findByPk(req.params.document_number,{
+    attributes: ['document_id', 'member_id', 'title', 'content', 'created']
+  })
+  .then((result)=>{
+    res.json(result);
+  })
+  .catch(()=>res.status(400).end());
+});
+//Document Comment Add
+router.post('/board/document/:document_number', function(req, res, next){
+  model.comment.create(req.body,{ fields:['parent_id', 'member_id','document_id', 'content', 'created']})
+  .then(()=> res.status(201).end())
+  .catch(()=>res.status(400).end());
+});
+//Document properties edit
+router.put('/board/document/:document_number', function(req, res, next){
+  model.document.update(req.body,{
+    where:{resource_id:req.params.document_number},
+    fields:['content', 'created']
+  })
+  .then(()=> res.end())
+  .catch(()=>res.status(400).end());
+});
+//Delete Document
+router.delete('/board/document/:document_number', function(req, res, next){
+  model.document.destroy({
+    where:{
+      document_id : req.params.document_number
+    }
+  })
+  .then(()=> res.end())
+  .catch(()=>res.status(400).end());
+});
+
+
+//Document Add
+router.post('/board/document/:member_id', function(req, res, next){
+  model.document.create(req.body,{
+    fields:['member_id', 'title', 'content', 'content', 'created']
+  })
+  .then(()=> res.end())
+  .catch(()=>res.status(400).end());
+});
+
+//
+//restaurant , review 
+//
+
+//get restaurant details
+router.get('/ansim/restaurant/:restaurant_id', function(req, res, next){
+  model.restaurant.findOne({
+    where:{
+      restaurant_id : req.params.restaurant_number
+    }
+  })
+  .then((result)=>res.json(result))
+  .catch(()=>res.status(400).end());
+});
+
+//edit restaurant details (for owners)
+router.put('/ansim/restaurant/:restaurant_id/edit', function(req, res, next){
+  model.document.update(req.body,{
+    where:{restaurant_id: req.params.restaurant_id},
+    fields:['description']
+  })
+  .then(()=> res.end())
+  .catch(()=>res.status(400).end());
+});
+
+//add review
+router.put('/ansim/restaurant/:restaurant_id', function(req,res,next){
+  //if review exists, error occurs
+  if(model.review.findAndCountAll({
+    where:{
+      [Op.and]:[
+        {
+          restaurant_id : req.params.restaurant_id
+        },
+        {
+          member_id: req.body.member_id
+        }
+      ]
+  }
+  })!=0){
+    res.status(401).end();
+  }
+  
+  model.review.create(req.body, {
+    fields:['restaurant_id', 'member_id', 'score', 'content', 'created']
+  })
+  
+  .then(()=> res.status(201).end())
+  .catch(()=>res.status(400).end());
+});
+
+//review delete
+router.delete('/ansim/restaurant/:restaurant_id', function(req,res,next){
+  model.review.destroy({
+    where:{
+      [Op.and]:[
+        {
+          restaurant_id : req.params.restaurant_id
+        },
+        {
+          member_id: req.body.member_id
+        }
+      ]
+  }})
+  .then(()=> res.end())
+  .catch(()=>res.status(400).end());
+})
+
 module.exports = router;
