@@ -50,6 +50,8 @@ CREATE TABLE restaurant(
     owner VARCHAR(255),
     phone VARCHAR(20),
     location VARCHAR(1024) NOT NULL,
+    geolocation_x DECIMAL(13, 10),
+    geolocation_y DECIMAL(13, 10),
     description LONGTEXT NOT NULL,
     api_code_mafra VARCHAR(255) NOT NULL UNIQUE KEY,
     api_code_gg VARCHAR(255) NOT NULL UNIQUE KEY,
@@ -59,6 +61,8 @@ CREATE TABLE restaurant(
     KEY(category_id),
     KEY(member_id),
     KEY(name),
+    KEY(geolocation_x),
+    KEY(geolocation_y),
     KEY(created),
 
     FOREIGN KEY(category_id) REFERENCES restaurant_category(category_id),
