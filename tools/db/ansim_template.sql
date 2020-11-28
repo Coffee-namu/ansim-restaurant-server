@@ -56,15 +56,15 @@ CREATE TABLE `comment` (
   `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `created` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`comment_id`),
+  KEY `created` (`created`),
   KEY `parent_id` (`parent_id`),
   KEY `member_id` (`member_id`),
   KEY `review_id` (`review_id`),
   KEY `document_id` (`document_id`),
-  KEY `created` (`created`),
   CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `comment` (`comment_id`),
-  CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`review_id`) REFERENCES `review` (`review_id`),
-  CONSTRAINT `comment_ibfk_3` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`),
-  CONSTRAINT `comment_ibfk_4` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`)
+  CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`),
+  CONSTRAINT `comment_ibfk_3` FOREIGN KEY (`review_id`) REFERENCES `review` (`review_id`),
+  CONSTRAINT `comment_ibfk_4` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -93,11 +93,11 @@ CREATE TABLE `document` (
   `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `created` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`document_id`),
+  KEY `title` (`title`),
+  KEY `created` (`created`),
   KEY `board_id` (`board_id`),
   KEY `category_id` (`category_id`),
   KEY `member_id` (`member_id`),
-  KEY `title` (`title`),
-  KEY `created` (`created`),
   CONSTRAINT `document_ibfk_1` FOREIGN KEY (`board_id`) REFERENCES `board` (`board_id`),
   CONSTRAINT `document_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `document_category` (`category_id`),
   CONSTRAINT `document_ibfk_3` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`)
@@ -127,9 +127,9 @@ CREATE TABLE `document_category` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`category_id`),
+  KEY `name` (`name`),
   KEY `parent_id` (`parent_id`),
   KEY `board_id` (`board_id`),
-  KEY `name` (`name`),
   CONSTRAINT `document_category_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `document_category` (`category_id`),
   CONSTRAINT `document_category_ibfk_2` FOREIGN KEY (`board_id`) REFERENCES `board` (`board_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -192,6 +192,8 @@ CREATE TABLE `restaurant` (
   `owner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `location` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `geolocation_x` decimal(13,10) DEFAULT NULL,
+  `geolocation_y` decimal(13,10) DEFAULT NULL,
   `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `api_code_mafra` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `api_code_gg` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -200,10 +202,12 @@ CREATE TABLE `restaurant` (
   PRIMARY KEY (`restaurant_id`),
   UNIQUE KEY `api_code_mafra` (`api_code_mafra`),
   UNIQUE KEY `api_code_gg` (`api_code_gg`),
+  KEY `name` (`name`),
+  KEY `geolocation_x` (`geolocation_x`),
+  KEY `geolocation_y` (`geolocation_y`),
+  KEY `created` (`created`),
   KEY `category_id` (`category_id`),
   KEY `member_id` (`member_id`),
-  KEY `name` (`name`),
-  KEY `created` (`created`),
   CONSTRAINT `restaurant_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `restaurant_category` (`category_id`),
   CONSTRAINT `restaurant_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -231,8 +235,8 @@ CREATE TABLE `restaurant_category` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`category_id`),
-  KEY `parent_id` (`parent_id`),
   KEY `name` (`name`),
+  KEY `parent_id` (`parent_id`),
   CONSTRAINT `restaurant_category_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `restaurant_category` (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -261,10 +265,10 @@ CREATE TABLE `review` (
   `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `created` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`review_id`),
-  KEY `restaurant_id` (`restaurant_id`),
-  KEY `member_id` (`member_id`),
   KEY `score` (`score`),
   KEY `created` (`created`),
+  KEY `restaurant_id` (`restaurant_id`),
+  KEY `member_id` (`member_id`),
   CONSTRAINT `review_ibfk_1` FOREIGN KEY (`restaurant_id`) REFERENCES `restaurant` (`restaurant_id`),
   CONSTRAINT `review_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -298,12 +302,11 @@ CREATE TABLE `vote` (
   UNIQUE KEY `member_id` (`member_id`,`review_id`),
   UNIQUE KEY `member_id_2` (`member_id`,`document_id`),
   UNIQUE KEY `member_id_3` (`member_id`,`comment_id`),
-  KEY `member_id_4` (`member_id`),
+  KEY `type` (`type`),
+  KEY `created` (`created`),
   KEY `review_id` (`review_id`),
   KEY `document_id` (`document_id`),
   KEY `comment_id` (`comment_id`),
-  KEY `type` (`type`),
-  KEY `created` (`created`),
   CONSTRAINT `vote_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`),
   CONSTRAINT `vote_ibfk_2` FOREIGN KEY (`review_id`) REFERENCES `review` (`review_id`),
   CONSTRAINT `vote_ibfk_3` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`),
@@ -329,4 +332,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-26 11:40:20
+-- Dump completed on 2020-11-28  9:32:21
