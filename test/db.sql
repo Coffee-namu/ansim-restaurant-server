@@ -140,9 +140,9 @@ CREATE TABLE comment(
     KEY(created),
 
     FOREIGN KEY(parent_id) REFERENCES comment(comment_id),
+    FOREIGN KEY(member_id) REFERENCES member(member_id),
     FOREIGN KEY(review_id) REFERENCES review(review_id),
-    FOREIGN KEY(document_id) REFERENCES document(document_id),
-    FOREIGN KEY(member_id) REFERENCES member(member_id)
+    FOREIGN KEY(document_id) REFERENCES document(document_id)
 );
 
 DROP TABLE IF EXISTS vote;
