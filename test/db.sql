@@ -34,7 +34,6 @@ CREATE TABLE restaurant_category(
     name VARCHAR(255) NOT NULL,
     description LONGTEXT NOT NULL,
 
-    KEY(parent_id),
     KEY(name),
 
     FOREIGN KEY(parent_id) REFERENCES restaurant_category(category_id)
@@ -58,8 +57,6 @@ CREATE TABLE restaurant(
     is_trusty TINYINT(1) NOT NULL DEFAULT 0 CHECK(is_trusty IN (0, 1)),
     created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    KEY(category_id),
-    KEY(member_id),
     KEY(name),
     KEY(geolocation_x),
     KEY(geolocation_y),
@@ -79,8 +76,6 @@ CREATE TABLE review(
     content LONGTEXT NOT NULL,
     created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    KEY(restaurant_id),
-    KEY(member_id),
     KEY(score),
     KEY(created),
 
@@ -105,8 +100,6 @@ CREATE TABLE document_category(
     name VARCHAR(255) NOT NULL,
     description LONGTEXT NOT NULL,
 
-    KEY(parent_id),
-    KEY(board_id),
     KEY(name),
 
     FOREIGN KEY(parent_id) REFERENCES document_category(category_id),
@@ -124,9 +117,6 @@ CREATE TABLE document(
     content LONGTEXT NOT NULL,
     created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    KEY(board_id),
-    KEY(category_id),
-    KEY(member_id),
     KEY(title),
     KEY(created),
 
@@ -147,10 +137,6 @@ CREATE TABLE comment(
     content LONGTEXT NOT NULL,
     created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    KEY(parent_id),
-    KEY(member_id),
-    KEY(review_id),
-    KEY(document_id),
     KEY(created),
 
     FOREIGN KEY(parent_id) REFERENCES comment(comment_id),
@@ -175,10 +161,6 @@ CREATE TABLE vote(
     UNIQUE KEY(member_id, document_id),
     UNIQUE KEY(member_id, comment_id),
 
-    KEY(member_id),
-    KEY(review_id),
-    KEY(document_id),
-    KEY(comment_id),
     KEY(type),
     KEY(created),
 
