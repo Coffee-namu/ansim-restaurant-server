@@ -70,6 +70,13 @@ class comment extends Sequelize.Model {
         ]
       },
       {
+        name: "created",
+        using: "BTREE",
+        fields: [
+          { name: "created" },
+        ]
+      },
+      {
         name: "parent_id",
         using: "BTREE",
         fields: [
@@ -95,13 +102,6 @@ class comment extends Sequelize.Model {
         using: "BTREE",
         fields: [
           { name: "document_id" },
-        ]
-      },
-      {
-        name: "created",
-        using: "BTREE",
-        fields: [
-          { name: "created" },
         ]
       },
     ]

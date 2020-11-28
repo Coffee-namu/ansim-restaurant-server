@@ -97,10 +97,17 @@ class vote extends Sequelize.Model {
         ]
       },
       {
-        name: "member_id_4",
+        name: "type",
         using: "BTREE",
         fields: [
-          { name: "member_id" },
+          { name: "type" },
+        ]
+      },
+      {
+        name: "created",
+        using: "BTREE",
+        fields: [
+          { name: "created" },
         ]
       },
       {
@@ -122,20 +129,6 @@ class vote extends Sequelize.Model {
         using: "BTREE",
         fields: [
           { name: "comment_id" },
-        ]
-      },
-      {
-        name: "type",
-        using: "BTREE",
-        fields: [
-          { name: "type" },
-        ]
-      },
-      {
-        name: "created",
-        using: "BTREE",
-        fields: [
-          { name: "created" },
         ]
       },
     ]

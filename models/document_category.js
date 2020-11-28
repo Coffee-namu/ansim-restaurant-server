@@ -53,6 +53,13 @@ class document_category extends Sequelize.Model {
         ]
       },
       {
+        name: "name",
+        using: "BTREE",
+        fields: [
+          { name: "name" },
+        ]
+      },
+      {
         name: "parent_id",
         using: "BTREE",
         fields: [
@@ -64,13 +71,6 @@ class document_category extends Sequelize.Model {
         using: "BTREE",
         fields: [
           { name: "board_id" },
-        ]
-      },
-      {
-        name: "name",
-        using: "BTREE",
-        fields: [
-          { name: "name" },
         ]
       },
     ]

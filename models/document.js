@@ -66,6 +66,20 @@ class document extends Sequelize.Model {
         ]
       },
       {
+        name: "title",
+        using: "BTREE",
+        fields: [
+          { name: "title" },
+        ]
+      },
+      {
+        name: "created",
+        using: "BTREE",
+        fields: [
+          { name: "created" },
+        ]
+      },
+      {
         name: "board_id",
         using: "BTREE",
         fields: [
@@ -84,20 +98,6 @@ class document extends Sequelize.Model {
         using: "BTREE",
         fields: [
           { name: "member_id" },
-        ]
-      },
-      {
-        name: "title",
-        using: "BTREE",
-        fields: [
-          { name: "title" },
-        ]
-      },
-      {
-        name: "created",
-        using: "BTREE",
-        fields: [
-          { name: "created" },
         ]
       },
     ]

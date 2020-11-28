@@ -46,6 +46,14 @@ class restaurant extends Sequelize.Model {
       type: DataTypes.STRING(1024),
       allowNull: false
     },
+    geolocation_x: {
+      type: DataTypes.DECIMAL(13,10),
+      allowNull: true
+    },
+    geolocation_y: {
+      type: DataTypes.DECIMAL(13,10),
+      allowNull: true
+    },
     description: {
       type: DataTypes.TEXT,
       allowNull: false
@@ -101,6 +109,34 @@ class restaurant extends Sequelize.Model {
         ]
       },
       {
+        name: "name",
+        using: "BTREE",
+        fields: [
+          { name: "name" },
+        ]
+      },
+      {
+        name: "geolocation_x",
+        using: "BTREE",
+        fields: [
+          { name: "geolocation_x" },
+        ]
+      },
+      {
+        name: "geolocation_y",
+        using: "BTREE",
+        fields: [
+          { name: "geolocation_y" },
+        ]
+      },
+      {
+        name: "created",
+        using: "BTREE",
+        fields: [
+          { name: "created" },
+        ]
+      },
+      {
         name: "category_id",
         using: "BTREE",
         fields: [
@@ -112,20 +148,6 @@ class restaurant extends Sequelize.Model {
         using: "BTREE",
         fields: [
           { name: "member_id" },
-        ]
-      },
-      {
-        name: "name",
-        using: "BTREE",
-        fields: [
-          { name: "name" },
-        ]
-      },
-      {
-        name: "created",
-        using: "BTREE",
-        fields: [
-          { name: "created" },
         ]
       },
     ]

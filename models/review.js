@@ -58,20 +58,6 @@ class review extends Sequelize.Model {
         ]
       },
       {
-        name: "restaurant_id",
-        using: "BTREE",
-        fields: [
-          { name: "restaurant_id" },
-        ]
-      },
-      {
-        name: "member_id",
-        using: "BTREE",
-        fields: [
-          { name: "member_id" },
-        ]
-      },
-      {
         name: "score",
         using: "BTREE",
         fields: [
@@ -83,6 +69,20 @@ class review extends Sequelize.Model {
         using: "BTREE",
         fields: [
           { name: "created" },
+        ]
+      },
+      {
+        name: "restaurant_id",
+        using: "BTREE",
+        fields: [
+          { name: "restaurant_id" },
+        ]
+      },
+      {
+        name: "member_id",
+        using: "BTREE",
+        fields: [
+          { name: "member_id" },
         ]
       },
     ]

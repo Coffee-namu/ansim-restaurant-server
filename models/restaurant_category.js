@@ -45,17 +45,17 @@ class restaurant_category extends Sequelize.Model {
         ]
       },
       {
-        name: "parent_id",
-        using: "BTREE",
-        fields: [
-          { name: "parent_id" },
-        ]
-      },
-      {
         name: "name",
         using: "BTREE",
         fields: [
           { name: "name" },
+        ]
+      },
+      {
+        name: "parent_id",
+        using: "BTREE",
+        fields: [
+          { name: "parent_id" },
         ]
       },
     ]
