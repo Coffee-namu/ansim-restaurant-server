@@ -131,7 +131,7 @@ function pythagorasFormula(user_x, user_y, rest_x, rest_y){
 
 //Board Page
 router.get('/board/:page_number', function(req, res, next){
-  model.document.findAll(
+  models.document.findAll(
     { 
       order:['document_id', 'DESC'],
       offset: (req.params.page_number-1)*20, limit : 20
@@ -144,7 +144,7 @@ router.get('/board/:page_number', function(req, res, next){
 //Document Page
 //Send Document's properties and Comments
 router.get('/board/document/:document_number', function(req, res, next){
-  model.document.findByPk(req.params.document_number,{
+  models.document.findByPk(req.params.document_number,{
     attributes: ['document_id', 'member_id', 'title', 'content', 'created']
   })
   .then((result)=>{
@@ -154,13 +154,13 @@ router.get('/board/document/:document_number', function(req, res, next){
 });
 //Document Comment Add
 router.post('/board/document/:document_number', function(req, res, next){
-  model.comment.create(req.body,{ fields:['parent_id', 'member_id','document_id', 'content', 'created']})
+  models.comment.create(req.body,{ fields:['parent_id', 'member_id','document_id', 'content', 'created']})
   .then(()=> res.status(201).end())
   .catch(()=>res.status(400).end());
 });
 //Document properties edit
 router.put('/board/document/:document_number', function(req, res, next){
-  model.document.update(req.body,{
+  models.document.update(req.body,{
     where:{resource_id:req.params.document_number},
     fields:['content', 'created']
   })
@@ -169,7 +169,7 @@ router.put('/board/document/:document_number', function(req, res, next){
 });
 //Delete Document
 router.delete('/board/document/:document_number', function(req, res, next){
-  model.document.destroy({
+  models.document.destroy({
     where:{
       document_id : req.params.document_number
     }
@@ -181,7 +181,7 @@ router.delete('/board/document/:document_number', function(req, res, next){
 
 //Document Add
 router.post('/board/document/:member_id', function(req, res, next){
-  model.document.create(req.body,{
+  models.document.create(req.body,{
     fields:['member_id', 'title', 'content', 'content', 'created']
   })
   .then(()=> res.end())
@@ -194,9 +194,9 @@ router.post('/board/document/:member_id', function(req, res, next){
 
 //get restaurant details
 router.get('/ansim/restaurant/:restaurant_id', function(req, res, next){
-  model.restaurant.findOne({
+  models.restaurant.findOne({
     where:{
-      restaurant_id : req.params.restaurant_number
+      restaurant_id : req.params.restaurant_id
     }
   })
   .then((result)=>res.json(result))
@@ -205,7 +205,7 @@ router.get('/ansim/restaurant/:restaurant_id', function(req, res, next){
 
 //edit restaurant details (for owners)
 router.put('/ansim/restaurant/:restaurant_id/edit', function(req, res, next){
-  model.document.update(req.body,{
+  models.document.update(req.body,{
     where:{restaurant_id: req.params.restaurant_id},
     fields:['description']
   })
@@ -216,7 +216,7 @@ router.put('/ansim/restaurant/:restaurant_id/edit', function(req, res, next){
 //add review
 router.put('/ansim/restaurant/:restaurant_id', function(req,res,next){
   //if review exists, error occurs
-  if(model.review.findAndCountAll({
+  if(models.review.findAndCountAll({
     where:{
       [Op.and]:[
         {
@@ -231,7 +231,7 @@ router.put('/ansim/restaurant/:restaurant_id', function(req,res,next){
     res.status(401).end();
   }
   
-  model.review.create(req.body, {
+  models.review.create(req.body, {
     fields:['restaurant_id', 'member_id', 'score', 'content', 'created']
   })
   
@@ -241,7 +241,7 @@ router.put('/ansim/restaurant/:restaurant_id', function(req,res,next){
 
 //review delete
 router.delete('/ansim/restaurant/:restaurant_id', function(req,res,next){
-  model.review.destroy({
+  models.review.destroy({
     where:{
       [Op.and]:[
         {
