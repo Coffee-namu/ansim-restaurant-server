@@ -68,7 +68,11 @@ const {Op} = require("sequelize");
 router.get('/ansim',function(req, res, next){
   //query around 5km restaurant
   models.restaurant.findAll().then((result) =>{
-      const getLocationGap = (location) => Math.abs(location.geolocation_x - req.body.x) + Math.abs(location.geolocation_y - req.body.y)
+      const getLocationGap = (location) => {
+        const width = Math.abs(location.geolocation_x - req.query.x)
+        const height = Math.abs(location.geolocation_y - req.query.y)
+        return width * width + height * height
+      }
 
       result.sort((a, b) => {
         const [aGap, bGap] = [getLocationGap(a.dataValues), getLocationGap(b.dataValues)]
