@@ -67,47 +67,20 @@ const {Op} = require("sequelize");
 //Get Ansim Restaurant Data Array(JSON)
 router.get('/ansim',function(req, res, next){
   //query around 5km restaurant
-  models.restaurant.findAll({
-    where:{
-      [Op.and]: [
-        {
-          x:{
-            [Op.between]:[req.body.x-0.004545, req.body.x+0.004545]
-          }
-        },
-        {
-          y:{
-          [Op.between]:[req.body.y-0.005681, req.body.y+0.005681]
-          }
-        }
-      ]
-    }
-  }).then((result) =>{
-      //get distance
-      var distanceSet=[];
-      for(var i=0;i<result.length;i++){
-        distanceSet.push(pythagorasFormula(req.body.x,req.body.y,result[i].x, result[i].y))
-      }
-      //set rank
-      var rankArray=[];
-      for(var j=0;j<distanceSet.length;j++){
-        var rank = 1;
-        for(k=0;k<distanceSet.length;k++){
-          if(distanceSet[j]<distanceSet[k]){
-            rank++;
-          }
-        }
-        rankArray.push(rank);
-      }
-      //
-      var pushResult=[];
-      for(var find=0;find<rankArray.length;find++){
-        pushResult.push(result[rankArray.indexOf(find+1)]);
-      }
-      res.json(pushResult);
+  models.restaurant.findAll().then((result) =>{
+      const getLocationGap = (location) => Math.abs(location.geolocation_x - req.body.x) + Math.abs(location.geolocation_y - req.body.y)
+
+      result.sort((a, b) => {
+        const [aGap, bGap] = [getLocationGap(a.dataValues), getLocationGap(b.dataValues)]
+        return aGap > bGap ? 1 : -1
+      })
+      res.json(result.slice(req.query.pageNum * req.query.pageSize, (+req.query.pageNum + 1) * req.query.pageSize))
     }
   )
-  .catch(()=> res.status(401).end());
+  .catch((e)=> {
+    console.log(e)
+    res.status(401).end()
+  });
 });
 function pythagorasFormula(user_x, user_y, rest_x, rest_y){
   //Special Law of Cosines.
