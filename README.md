@@ -320,7 +320,7 @@ JSON 형식
 
 * DELETE
 
-# require
+#### require
 
 * URL : restaurant_id
 * body : member_id
