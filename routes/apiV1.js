@@ -67,7 +67,8 @@ const {Op} = require("sequelize");
 //Get Ansim Restaurant Data Array(JSON)
 router.get('/ansim',function(req, res, next){
   //query around 5km restaurant
-  models.restaurant.findAll().then((result) =>{
+  models.restaurant.findAll()
+    .then((result) => {
       const getLocationGap = (location) => {
         const width = Math.abs(location.geolocation_x - req.query.x)
         const height = Math.abs(location.geolocation_y - req.query.y)
@@ -79,12 +80,11 @@ router.get('/ansim',function(req, res, next){
         return aGap > bGap ? 1 : -1
       })
       res.json(result.slice(req.query.pageNum * req.query.pageSize, (+req.query.pageNum + 1) * req.query.pageSize))
-    }
-  )
-  .catch((e)=> {
-    console.log(e)
-    res.status(401).end()
-  });
+    })
+    .catch((e)=> {
+      console.log(e)
+      res.status(401).end()
+    });
 });
 function pythagorasFormula(user_x, user_y, rest_x, rest_y){
   //Special Law of Cosines.
@@ -108,13 +108,14 @@ function pythagorasFormula(user_x, user_y, rest_x, rest_y){
 
 //Board Page
 router.get('/board/:page_number', function(req, res, next){
-  models.document.findAll(
-    { 
-      order:['document_id', 'DESC'],
+  models.document.findAll({ 
       offset: (req.params.page_number-1)*20, limit : 20
-    }
-  
-  ).then((result)=>res.json(result))
+  }).then((result) => {
+    result.sort((a, b) => {
+      return a.dataValues.created < b.dataValues.created ? 1 : -1
+    })
+    res.json(result)
+  })
   .catch(()=>res.status(400).end());
 });
 
