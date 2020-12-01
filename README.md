@@ -34,7 +34,7 @@
 
 #### return 
 
-JSON 배열 형식
+JSON 배열 혼합 형식
 
 ```javascript
 
@@ -75,13 +75,13 @@ created:'2020.12.01,10:10:10'
   
 #### return
 
-JSON 배열형식
+JSON 배열 혼합 형식
 
 ```javascript
 ///예시
 {
-document_fragment:[{document_id, member_id, title, created}...],
-members : [{member_id, username}...],
+document_fragment:[{document_id, member_id, title, created},...],
+members : [{member_id, username},...],
 }
 
 
@@ -101,7 +101,7 @@ members : [{member_id, username}...],
 
 * POST
 
-### Reqire
+#### Reqire
 
 * body : ['board_id(항상 0)','category_id(카테고리 구분 안하는 중, 항상 0)','member_id','title','content','created(없을 시 자동생성)']
 
@@ -133,7 +133,7 @@ members : [{member_id, username}...],
 
 #### return
 
-JSON 배열형식
+JSON 배열 혼합 형식
 
 ```javascript
 {
