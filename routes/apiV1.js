@@ -233,4 +233,13 @@ router.delete('/ansim/restaurant/:restaurant_id', function(req,res,next){
   .catch(()=>res.status(400).end());
 })
 
+// Get reviews of a restaurant
+router.get('/ansim/restaurant/:restaurant_id/reviews', (req, res, next) => {
+  models.review.findAll({
+    order: ['created']
+  }).then(result => {
+    res.json(result)
+  })
+})
+
 module.exports = router;
