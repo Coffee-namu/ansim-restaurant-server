@@ -2,24 +2,24 @@
 
 ## 목차
 
-* [안심 식당 정보 받기](#안심-식당-정보-받기)
-* [게시판 - 게시물 가져오기](#게시판---게시물-가져오기)
-* [게시물 - 등록](#게시물---등록)
-* [게시물 - 가져오기](#게시물---가져오기)
-* [게시물 - 댓글 등록](#게시물---댓글-등록)
-* [게시물 - 편집](#게시물---편집)
-* [게시물 - 삭제 / 댓글 삭제](#게시물---삭제-/-댓글-삭제)
-* [식당정보 - 식당 상세정보 가져오기](#식당정보---식당-상세정보-가져오기)
-* [식당정보 - 식당 상세정보 편집(소유자, 관리자 허용기능)](#식당정보---식당-상세정보-편집(소유자,-관리자-허용기능))
-* [리뷰 - 리뷰 등록](#리뷰---리뷰-등록)
-* [리뷰 - 리뷰 삭제](#리뷰---리뷰-삭제)
-* [리뷰 - 식당의 리뷰 전부 가져오기](#리뷰---식당의-리뷰-전부-가져오기)
-* [리뷰 - 리뷰 상세정보 가져오기](리뷰---리뷰-상세정보-가져오기)
-* [리뷰 - 리뷰 수정](#리뷰---리뷰-수정)
-* [리뷰 - 댓글 등록](리뷰---댓글-등록)
-* [리뷰 - 삭제 / 댓글 삭제](#리뷰---삭제-/-댓글-삭제)
+- [안심 식당 정보 받기](#안심-식당-정보-받기)
+- [게시판 - 게시물 가져오기](#게시판---게시물-가져오기)
+- [게시물 - 등록](#게시물---등록)
+- [게시물 - 가져오기](#게시물---가져오기)
+- [게시물 - 댓글 등록](#게시물---댓글-등록)
+- [게시물 - 편집](#게시물---편집)
+- [게시물 - 삭제 / 댓글 삭제](#게시물---삭제-/-댓글-삭제)
+- [식당정보 - 식당 상세정보 가져오기](#식당정보---식당-상세정보-가져오기)
+- [식당정보 - 식당 상세정보 편집(소유자, 관리자 허용기능)](<#식당정보---식당-상세정보-편집(소유자,-관리자-허용기능)>)
+- [리뷰 - 리뷰 등록](#리뷰---리뷰-등록)
+- [리뷰 - 리뷰 삭제](#리뷰---리뷰-삭제)
+- [리뷰 - 식당의 리뷰 전부 가져오기](#리뷰---식당의-리뷰-전부-가져오기)
+- [리뷰 - 리뷰 상세정보 가져오기](리뷰---리뷰-상세정보-가져오기)
+- [리뷰 - 리뷰 수정](#리뷰---리뷰-수정)
+- [리뷰 - 댓글 등록](리뷰---댓글-등록)
+- [리뷰 - 삭제 / 댓글 삭제](#리뷰---삭제-/-댓글-삭제)
 
-***
+---
 
 ### [안심 식당 정보 받기](#목차)
 
@@ -27,12 +27,13 @@
 
 #### URL
 
-* /ansim
+- /ansim
 
-#### function 
-* get
+#### function
 
-#### return 
+- get
+
+#### return
 
 JSON 배열 형식
 
@@ -41,7 +42,7 @@ JSON 배열 형식
 ///예시
 [
 {
-restaurant_id:"1", 
+restaurant_id:"1",
 category_id:'0',
 member_id:'1',
 name:'string',
@@ -56,7 +57,7 @@ created:'2020.12.01,10:10:10'
 
 ```
 
-***
+---
 
 ### [게시판 - 게시물 가져오기](#목차)
 
@@ -64,15 +65,16 @@ created:'2020.12.01,10:10:10'
 
 #### URL
 
-* /board/:page_number
+- /board/:page_number
 
 #### function
 
-* get
+- get
+
 #### require
 
-* URL의 page_number
-  
+- URL의 page_number
+
 #### return
 
 JSON 배열형식
@@ -87,7 +89,7 @@ members : [{member_id, username}...],
 
 ```
 
-***
+---
 
 ### [게시물 - 등록](#목차)
 
@@ -95,17 +97,18 @@ members : [{member_id, username}...],
 
 #### URL
 
-* /board/document
+- /board/document
 
 #### function
 
-* POST
+- POST
 
 ### Reqire
 
-* body : ['board_id(항상 0)','category_id(카테고리 구분 안하는 중, 항상 0)','member_id','title','content','created(없을 시 자동생성)']
+- body : ['board_id(항상 0)','category_id(카테고리 구분 안하는 중, 항상 0)','member_id','title','content','created(없을 시 자동생성)']
 
 #### return
+
 ```javascript
 
 201 => success
@@ -113,7 +116,7 @@ members : [{member_id, username}...],
 
 ```
 
-***
+---
 
 ### [게시물 - 가져오기](#목차)
 
@@ -121,15 +124,15 @@ members : [{member_id, username}...],
 
 #### URL
 
-* /board/document/:document_number
+- /board/document/:document_number
 
 #### function
 
-* GET
+- GET
 
 #### require
 
-* URL의 document_number
+- URL의 document_number
 
 #### return
 
@@ -143,7 +146,7 @@ members:[{member_id, username},...]
 }
 ```
 
-***
+---
 
 ### [게시물 - 댓글 등록](#목차)
 
@@ -151,17 +154,18 @@ members:[{member_id, username},...]
 
 #### URL
 
-* /board/document/:document_number
+- /board/document/:document_number
 
 #### function
 
-* POST
+- POST
 
 #### require
 
-* body : ['member_id','document_id', 'content', 'created(없을 시 자동생성)']
+- body : ['member_id','document_id', 'content', 'created(없을 시 자동생성)']
 
 #### return
+
 ```javascript
 
 201 => success
@@ -169,7 +173,7 @@ members:[{member_id, username},...]
 
 ```
 
-***
+---
 
 ### [게시물 - 편집](#목차)
 
@@ -177,18 +181,19 @@ members:[{member_id, username},...]
 
 #### URL
 
-* /board/document/:document_number
+- /board/document/:document_number
 
 #### function
 
-* PUT
+- PUT
 
 #### require
 
-* URL : document_number
-* body : ['title','content', 'created(없을 시 자동생성)']
+- URL : document_number
+- body : ['title','content', 'created(없을 시 자동생성)']
 
 #### return
+
 ```javascript
 
 201 => success
@@ -196,7 +201,7 @@ members:[{member_id, username},...]
 
 ```
 
-***
+---
 
 ### [게시물 - 삭제 / 댓글 삭제](#목차)
 
@@ -204,19 +209,19 @@ members:[{member_id, username},...]
 
 #### URL
 
-* /board/document/:document_number
+- /board/document/:document_number
 
 #### function
 
-* DELETE
+- DELETE
 
 #### require
 
-* URL : document_number
-* body : deleteReq => 'document'일때 문서 삭제, 'comment'일 때 댓글 삭제
-
+- URL : document_number
+- body : deleteReq => 'document'일때 문서 삭제, 'comment'일 때 댓글 삭제
 
 #### return
+
 ```javascript
 
 201 => success
@@ -224,7 +229,7 @@ members:[{member_id, username},...]
 
 ```
 
-***
+---
 
 ### [식당정보 - 식당 상세정보 가져오기](#목차)
 
@@ -232,25 +237,27 @@ members:[{member_id, username},...]
 
 #### URL
 
-* /ansim/restaurant/:restaurant_id
+- /ansim/restaurant/:restaurant_id
 
 #### function
 
-* GET
+- GET
 
-#### require 
+#### require
 
-* URL : restaurant_id
+- URL : restaurant_id
 
 #### return
+
 JSON 형식
+
 ```javascript
-
-{restaurant_id, member_id, name, owner, phone, location, description, isTrusty}
-
+{
+  restaurant_id, member_id, name, owner, phone, location, description, isTrusty;
+}
 ```
 
-***
+---
 
 ### [식당정보 - 식당 상세정보 편집(소유자, 관리자 허용기능)](#목차)
 
@@ -258,18 +265,19 @@ JSON 형식
 
 #### URL
 
-* /ansim/restaurant/:restaurant_id
+- /ansim/restaurant/:restaurant_id
 
 #### function
 
-* PUT
+- PUT
 
 #### require
 
-* URL : restaurant_id
-* body : user_id
+- URL : restaurant_id
+- body : user_id
 
 #### return
+
 ```javascript
 
 201 => success
@@ -277,7 +285,7 @@ JSON 형식
 
 ```
 
-***
+---
 
 ### [리뷰 - 리뷰 등록](#목차)
 
@@ -285,17 +293,18 @@ JSON 형식
 
 #### URL
 
-* /ansim/restaurant/:restaurant_id/review
+- /ansim/restaurant/:restaurant_id/review
 
 #### function
 
-* POST
+- POST
 
 #### Reqiure
 
-* URL : restaurant_id
+- URL : restaurant_id
 
 #### return
+
 ```javascript
 
 201 => success
@@ -304,9 +313,7 @@ JSON 형식
 
 ```
 
-***
-
-
+---
 
 ### [리뷰 - 리뷰 삭제](#목차)
 
@@ -314,18 +321,19 @@ JSON 형식
 
 #### URL
 
-* /ansim/restaurant/:restaurant_id/review
+- /ansim/restaurant/:restaurant_id/review
 
 #### function
 
-* DELETE
+- DELETE
 
 # require
 
-* URL : restaurant_id
-* body : member_id
+- URL : restaurant_id
+- body : member_id
 
 #### return
+
 ```javascript
 
 201 => success
@@ -333,7 +341,7 @@ JSON 형식
 
 ```
 
-***
+---
 
 ### [리뷰 - 식당의 리뷰 전부 가져오기](#목차)
 
@@ -341,17 +349,18 @@ JSON 형식
 
 #### URL
 
-* /ansim/restaurant/:restaurant_id/review
+- /ansim/restaurant/:restaurant_id/review
 
 #### function
 
-* GET
+- GET
 
 #### require
 
-* URL : restaurant_id
+- URL : restaurant_id
 
 #### return
+
 JSON 배열 혼합 형식
 
 ```javascript
@@ -363,25 +372,26 @@ members : [{member_id, username},...],
 
 ```
 
-***
+---
 
 ### [리뷰 - 리뷰 상세정보 가져오기](#목차)
 
-리뷰의 상세정보를 가져온다. 
+리뷰의 상세정보를 가져온다.
 
 #### URL
 
-* /ansim/restaurant/:restaurant_id/review/:review_id
+- /ansim/restaurant/:restaurant_id/review/:review_id
 
 #### function
 
-* GET
+- GET
 
 #### require
 
-* URL : restaurant_id, review_id
+- URL : restaurant_id, review_id
 
 #### return
+
 JSON 배열 혼합형태
 
 ```javascript
@@ -394,7 +404,7 @@ members:[{user_id, username},...],
 
 ```
 
-***
+---
 
 ### [리뷰 - 리뷰 수정](#목차)
 
@@ -402,18 +412,19 @@ members:[{user_id, username},...],
 
 #### URL
 
-* /ansim/restaurant/:restaurant_id/review/:review_id
+- /ansim/restaurant/:restaurant_id/review/:review_id
 
 #### function
 
-* PUT
+- PUT
 
 #### require
 
-* URL : review_id
-* body : 'title','content', 'created(없으면 자동 생성)'
+- URL : review_id
+- body : 'title','content', 'created(없으면 자동 생성)'
 
 #### return
+
 ```javascript
 
 201 => success
@@ -421,7 +432,7 @@ members:[{user_id, username},...],
 
 ```
 
-***
+---
 
 ### [리뷰 - 댓글 등록](#목차)
 
@@ -429,17 +440,18 @@ members:[{user_id, username},...],
 
 #### URL
 
-* /ansim/restaurant/:restaurant_id/review/:review_id
+- /ansim/restaurant/:restaurant_id/review/:review_id
 
 #### function
 
-* POST
+- POST
 
 #### require
 
-* body : 'member_id', 'review_id', 'content', 'created'
+- body : 'member_id', 'review_id', 'content', 'created'
 
 #### return
+
 ```javascript
 
 201 => success
@@ -447,7 +459,7 @@ members:[{user_id, username},...],
 
 ```
 
-***
+---
 
 ### [리뷰 - 삭제 / 댓글 삭제](#목차)
 
@@ -455,18 +467,19 @@ members:[{user_id, username},...],
 
 #### URL
 
-* /ansim/restaurant/:restaurant_id/review/:review_id
+- /ansim/restaurant/:restaurant_id/review/:review_id
 
 #### function
 
-* DELETE
+- DELETE
 
 #### require
 
-* URL : review_id
-* body : deleteReq => 'review' 일 때 리뷰 삭제, 'comment'일 때 댓글 삭제
+- URL : review_id
+- body : deleteReq => 'review' 일 때 리뷰 삭제, 'comment'일 때 댓글 삭제
 
 #### return
+
 ```javascript
 
 201 => success

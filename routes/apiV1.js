@@ -27,6 +27,15 @@ router.get('/members', function(req, res, next) {
   }
 });
 
+router.get('/members/all', function(req, res, next) {
+  models.member.findAll().then((result) => {
+    res.json(result.map(member => ({
+      member_id: member.member_id,
+      username: member.username
+    })));
+  })
+});
+
 router.put('/members', function(req, res, next) {
   if (req.isAuthenticated()) {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
@@ -67,7 +76,8 @@ const {Op} = require("sequelize");
 //Get Ansim Restaurant Data Array(JSON)
 router.get('/ansim',function(req, res, next){
   //query around 5km restaurant
-  models.restaurant.findAll().then((result) =>{
+  models.restaurant.findAll()
+    .then((result) => {
       const getLocationGap = (location) => {
         const width = Math.abs(location.geolocation_x - req.query.x)
         const height = Math.abs(location.geolocation_y - req.query.y)
@@ -79,12 +89,11 @@ router.get('/ansim',function(req, res, next){
         return aGap > bGap ? 1 : -1
       })
       res.json(result.slice(req.query.pageNum * req.query.pageSize, (+req.query.pageNum + 1) * req.query.pageSize))
-    }
-  )
-  .catch((e)=> {
-    console.log(e)
-    res.status(401).end()
-  });
+    })
+    .catch((e)=> {
+      console.log(e)
+      res.status(401).end()
+    });
 });
 function pythagorasFormula(user_x, user_y, rest_x, rest_y){
   //Special Law of Cosines.
@@ -105,65 +114,102 @@ function pythagorasFormula(user_x, user_y, rest_x, rest_y){
 
 //Board No =  1(자유게시판) 2(리뷰게시판) ?
 //1 page have 20 documents
-
+function getUserNameFromDocumentById(document_frag, callback){
+  var users=[];
+  for(var i=0;i<document_frag.length;i++){
+    model.member.findByPk(document_frag[i].member_id, {
+      attributes: ['member_id','username'],
+    })
+    .then(result => {users.push(result)})
+    .catch(()=>{});
+  }
+  callback(users)
+}
 //Board Page
-router.get('/board/:page_number', function(req, res, next){
-  models.document.findAll(
-    { 
-      order:['document_id', 'DESC'],
-      offset: (req.params.page_number-1)*20, limit : 20
-    }
-  
-  ).then((result)=>res.json(result))
+router.get('/board', function(req, res, next){
+  models.document.findAll().then((result) => {
+    result.sort((a, b) => {
+      return a.dataValues.created > b.dataValues.created ? 1 : -1
+    })
+    res.json(result)
+  })
   .catch(()=>res.status(400).end());
 });
 
 //Document Page
-//Send Document's properties and Comments
+//Document Comment Read
 router.get('/board/document/:document_number', function(req, res, next){
-  models.document.findByPk(req.params.document_number,{
-    attributes: ['document_id', 'member_id', 'title', 'content', 'created']
-  })
+  models.comment.findAll()
   .then((result)=>{
-    res.json(result);
+    const commentList = result.filter((comment) => comment.dataValues.document_id === +req.params.document_number)
+    res.json(commentList);
   })
-  .catch(()=>res.status(400).end());
 });
+
 //Document Comment Add
 router.post('/board/document/:document_number', function(req, res, next){
   models.comment.create(req.body,{ fields:['parent_id', 'member_id','document_id', 'content', 'created']})
-  .then(()=> res.status(201).end())
+  .then((result)=> {
+    res.json(result.dataValues.comment_id)
+  })
   .catch(()=>res.status(400).end());
 });
+
+
 //Document properties edit
 router.put('/board/document/:document_number', function(req, res, next){
   models.document.update(req.body,{
     where:{resource_id:req.params.document_number},
-    fields:['content', 'created']
+    fields:['title','content', 'created']
   })
-  .then(()=> res.end())
+  .then(()=> res.status(201).end())
   .catch(()=>res.status(400).end());
 });
-//Delete Document
+//Delete Document or Delete Comment of Document
 router.delete('/board/document/:document_number', function(req, res, next){
-  models.document.destroy({
-    where:{
-      document_id : req.params.document_number
-    }
-  })
-  .then(()=> res.end())
-  .catch(()=>res.status(400).end());
-});
+  if(req.body.deleteReq==='document'){
+    models.document.destroy({
+      where:{
+        document_id : req.params.document_number
+      }
+    })
+    .then(()=> res.status(201).end())
+    .catch(()=>res.status(400).end());
+  }
+  
+  else if(req.body.deleteReq==='comment'){
+    models.comment.destroy({
+      where:{
+        [Op.and]:[{
+          document_id : req.params.document_number,
+        },
+        {
+          comment_id: req.body.comment_id,
+        }
+      ]
 
+      },
+    })
+    .then(()=> res.end())
+    .catch(()=>res.status(400).end());
+  }
+})
+  
 
 //Document Add
-router.post('/board/document/:member_id', function(req, res, next){
+router.post('/board/document', function(req, res, next){
   models.document.create(req.body,{
-    fields:['member_id', 'title', 'content', 'content', 'created']
+    fields:['member_id', 'title', 'content', 'created', 'board_id', 'category_id']
   })
-  .then(()=> res.end())
-  .catch(()=>res.status(400).end());
+  .then((result)=> {
+    res.json(result.dataValues.document_id)
+  })
+  .catch((e)=>{
+    console.log(e)
+    res.status(400).end()
+  });
 });
+
 
 //
 //restaurant , review 
@@ -174,7 +220,7 @@ router.get('/ansim/restaurant/:restaurant_id', function(req, res, next){
   models.restaurant.findOne({
     where:{
       restaurant_id : req.params.restaurant_id
-    }
+    },
   })
   .then((result)=>res.json(result))
   .catch(()=>res.status(400).end());
@@ -182,12 +228,26 @@ router.get('/ansim/restaurant/:restaurant_id', function(req, res, next){
 
 //edit restaurant details (for owners)
 router.put('/ansim/restaurant/:restaurant_id/edit', function(req, res, next){
-  models.document.update(req.body,{
-    where:{restaurant_id: req.params.restaurant_id},
-    fields:['description']
-  })
-  .then(()=> res.end())
-  .catch(()=>res.status(400).end());
+    const isUser = false;
+    models.member.findByPk(req.body.user_id,{
+        attributes:['is_admin', 'is_owner','is_customer'],
+      }).then(member =>{
+        if(Boolean(member.is_admin))
+          isUser = true;
+        else if(Boolean(member.is_owner))
+          isUser = true;
+      })
+    if(isUser){
+      models.document.update(req.body,{
+      where:{restaurant_id: req.params.restaurant_id},
+      fields:['description']
+      })
+      .then(()=> res.status(201).end())
+      .catch(()=>res.status(400).end());
+      }
+  else{
+    res.status(401).end();
+  }
 });
 
 //add review
@@ -217,7 +277,7 @@ router.put('/ansim/restaurant/:restaurant_id', function(req,res,next){
 });
 
 //review delete
-router.delete('/ansim/restaurant/:restaurant_id', function(req,res,next){
+router.delete('/ansim/restaurant/:restaurant_id/review', function(req,res,next){
   models.review.destroy({
     where:{
       [Op.and]:[
@@ -229,9 +289,95 @@ router.delete('/ansim/restaurant/:restaurant_id', function(req,res,next){
         }
       ]
   }})
+  .then(()=> res.status(201).end())
+  .catch(()=>res.status(400).end());
+})
+
+//show reviews of restaurant
+
+router.get('/ansim/restaurant/:restaurant_id/review', function(req, res, next){
+  var review = []
+  var user = []
+  models.review.findAll(req.params.restaurant_id, {
+    attributes:['review_id', 'member_id', 'score','created']
+  })
+  .then((result)=>{
+    Object.assign(review, result);
+    getUserNameFromDocumentById(review)
+    .then((result)=>{
+      user.push(result)
+      res.json({review_fragment:review, members : user })
+    })
+  })
+  .catch(()=>res.status(400).end())
+})
+
+//review details
+router.get('/ansim/restaurant/:restaurant_id/review/:review_id', function(req, res, next){
+  var review = {}
+  var comments = []
+  var user = []
+  models.review.findByPk(req.params.review_id)
+  .then((result)=>{
+    Object.assign(review, result)
+    models.comments.findAll({
+      where:{review_id:req.params.review_id},
+      attributes:['comment_id', 'member_id', 'content']
+    })
+    .then((result)=>{
+      comments = result;
+      getUserNameFromDocumentById(comments).then((result)=>{
+        user=result;
+        res.json({review:review, comments : comments, members:users})
+      })
+    })
+    .catch(()=>res.status(400).end());
+  })
+  .catch(()=>res.status(400).end())
+})
+//review edit
+router.put('/ansim/restaurant/:restaurant_id/review/:review_id', function(req, res, next){
+  models.review.update(req.body,{
+    where:{review_id:req.params.review_id},
+    fields:['title','content', 'created']
+  })
   .then(()=> res.end())
   .catch(()=>res.status(400).end());
 })
+//review comment add
+router.post('/ansim/restaurant/:restaurant_id/review/:review_id', function(req, res, next){
+  models.comment.create(req.body,{
+    fields:['member_id', 'review_id', 'content', 'created']
+  })
+  .then(()=> res.status(201).end())
+  .catch(()=>res.status(400).end());
+})
+//review delete or review's comment delete
+router.delete('/ansim/restaurant/:restaurant_id/review/:review_id', function(req, res, next){
+  if(req.body.deleteReq==='review'){
+    models.document.destroy({
+      where:{
+        review_id : req.params.review_id
+      }
+    })
+    .then(()=> res.status(201).end())
+    .catch(()=>res.status(400).end());
+  }
+  else if(req.body.deleteReq==='comment'){
+    models.comment.destroy({
+      where:{
+        [Op.and]:[
+          {review_id : req.params.review_id},
+          {comment_id : req.body.comment_id}
+        ]
+      }
+    })
+    .then(()=> res.status(201).end())
+    .catch(()=>res.status(400).end());
+  }
+})
+
+
 
 // Get reviews of a restaurant
 router.get('/ansim/restaurant/:restaurant_id/reviews', (req, res, next) => {
