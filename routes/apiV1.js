@@ -217,11 +217,10 @@ router.post('/board/document', function(req, res, next){
 
 //get restaurant details
 router.get('/ansim/restaurant/:restaurant_id', function(req, res, next){
-  models.restaurant.findByPk({
+  models.restaurant.findOne({
     where:{
       restaurant_id : req.params.restaurant_id
     },
-    attributes:['restaurant_id', 'member_id','name','owner','phone','location','description', 'isTrusty']
   })
   .then((result)=>res.json(result))
   .catch(()=>res.status(400).end());
@@ -252,7 +251,7 @@ router.put('/ansim/restaurant/:restaurant_id/edit', function(req, res, next){
 });
 
 //add review
-router.post('/ansim/restaurant/:restaurant_id/review', function(req,res,next){
+router.put('/ansim/restaurant/:restaurant_id', function(req,res,next){
   //if review exists, error occurs
   if(models.review.findAndCountAll({
     where:{
