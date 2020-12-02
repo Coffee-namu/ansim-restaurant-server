@@ -27,6 +27,15 @@ router.get('/members', function(req, res, next) {
   }
 });
 
+router.get('/members/all', function(req, res, next) {
+  models.member.findAll().then((result) => {
+    res.json(result.map(member => ({
+      member_id: member.member_id,
+      username: member.username
+    })));
+  })
+});
+
 router.put('/members', function(req, res, next) {
   if (req.isAuthenticated()) {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
@@ -107,12 +116,10 @@ function pythagorasFormula(user_x, user_y, rest_x, rest_y){
 //1 page have 20 documents
 
 //Board Page
-router.get('/board/:page_number', function(req, res, next){
-  models.document.findAll({ 
-      offset: (req.params.page_number-1)*20, limit : 20
-  }).then((result) => {
+router.get('/board', function(req, res, next){
+  models.document.findAll().then((result) => {
     result.sort((a, b) => {
-      return a.dataValues.created < b.dataValues.created ? 1 : -1
+      return a.dataValues.created > b.dataValues.created ? 1 : -1
     })
     res.json(result)
   })
@@ -120,20 +127,20 @@ router.get('/board/:page_number', function(req, res, next){
 });
 
 //Document Page
-//Send Document's properties and Comments
+//Document Comment Read
 router.get('/board/document/:document_number', function(req, res, next){
-  models.document.findByPk(req.params.document_number,{
-    attributes: ['document_id', 'member_id', 'title', 'content', 'created']
-  })
+  models.comment.findAll()
   .then((result)=>{
-    res.json(result);
+    const commentList = result.filter((comment) => comment.dataValues.document_id === +req.params.document_number)
+    res.json(commentList);
   })
-  .catch(()=>res.status(400).end());
 });
 //Document Comment Add
 router.post('/board/document/:document_number', function(req, res, next){
   models.comment.create(req.body,{ fields:['parent_id', 'member_id','document_id', 'content', 'created']})
-  .then(()=> res.status(201).end())
+  .then((result)=> {
+    res.json(result.dataValues.comment_id)
+  })
   .catch(()=>res.status(400).end());
 });
 //Document properties edit
@@ -158,12 +165,17 @@ router.delete('/board/document/:document_number', function(req, res, next){
 
 
 //Document Add
-router.post('/board/document/:member_id', function(req, res, next){
+router.post('/board/document', function(req, res, next){
   models.document.create(req.body,{
-    fields:['member_id', 'title', 'content', 'content', 'created']
+    fields:['member_id', 'title', 'content', 'created', 'board_id', 'category_id']
   })
-  .then(()=> res.end())
-  .catch(()=>res.status(400).end());
+  .then((result)=> {
+    res.json(result.dataValues.document_id)
+  })
+  .catch((e)=>{
+    console.log(e)
+    res.status(400).end()
+  });
 });
 
 //
